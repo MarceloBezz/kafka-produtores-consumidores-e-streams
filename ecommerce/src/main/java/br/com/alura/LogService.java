@@ -4,11 +4,12 @@ import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class LogService {
     public static void main(String[] args) {
         var logService = new LogService();
         var service = new KafkaService(LogService.class.getSimpleName(),
-                Pattern.compile("ECOMMERCE.*"), logService::parse);
+                Pattern.compile("ECOMMERCE.*"), logService::parse, String.class);
         service.run();
     }
 

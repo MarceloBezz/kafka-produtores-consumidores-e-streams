@@ -5,12 +5,13 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public class EmailService {
     public static void main(String[] args) {
         var emailService = new EmailService();
-        var service = new KafkaService(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL",
-                emailService::parse);
+        var service = new KafkaService<Email>(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL",
+                emailService::parse,
+                Email.class);
         service.run();
     }
 
-    private void parse(ConsumerRecord<String, String> record) {
+    private void parse(ConsumerRecord<String, Email> record) {
         System.out.println("------------------------------------------");
         System.out.println("SEND EMAIL");
         System.out.println(record.key());
