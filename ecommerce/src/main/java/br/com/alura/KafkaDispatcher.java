@@ -9,14 +9,14 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-class KafkaDispatcher {
-    private final KafkaProducer<String, String> producer;
+class KafkaDispatcher<T> {
+    private final KafkaProducer<String, T> producer;
 
     KafkaDispatcher() {
         this.producer = new KafkaProducer<>(properties());
     }
 
-    void send(String topic, String key, String value) throws InterruptedException, ExecutionException {
+    void send(String topic, String key, T value) throws InterruptedException, ExecutionException {
         var record = new ProducerRecord<>(topic, key, value);
 
         Callback callback = (data, ex) -> {
@@ -35,7 +35,7 @@ class KafkaDispatcher {
         var properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class.getName());
         return properties;
     }
 }
