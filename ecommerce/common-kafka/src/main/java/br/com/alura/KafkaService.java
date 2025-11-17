@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -39,10 +38,9 @@ class KafkaService<T> {
                 for (var record : records) {
                     try {
                         parse.consume(record);
-                    } catch (InterruptedException e) {
-                        // FIXME so far, just logging the exception for this message
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (Exception e) {
+                        // Only catches Exception because no matter which Exception
+                        // I want to recover and parse the next one
                         // FIXME so far, just logging the exception for this message
                         e.printStackTrace();
                     }
