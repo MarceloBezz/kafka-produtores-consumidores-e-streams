@@ -22,12 +22,12 @@ public class ReadingReport {
         service.run();
     }
 
-    void parse(ConsumerRecord<String, User> record) throws IOException, URISyntaxException {
+    void parse(ConsumerRecord<String, Message<User>> record) throws IOException, URISyntaxException {
         Path SOURCE = Paths.get(ReadingReport.class.getClassLoader().getResource("report.txt").toURI());
         System.out.println("------------------------------------------");
         System.out.println("Processing report for" + record.value());
 
-        var user = record.value();
+        var user = record.value().getPayload();
         var target = new File(user.getReportPath());
         IO.copyTo(SOURCE, target);
         IO.append(target, "Created for " + user.getUuid());

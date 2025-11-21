@@ -10,13 +10,14 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 class KafkaDispatcher<T> {
-    private final KafkaProducer<String, T> producer;
+    private final KafkaProducer<String, Message<T>> producer;
 
     KafkaDispatcher() {
         this.producer = new KafkaProducer<>(properties());
     }
 
-    void send(String topic, String key, T value) throws InterruptedException, ExecutionException {
+    void send(String topic, String key, T payload) throws InterruptedException, ExecutionException {
+        var value = new Message<>(new CorrelationId(), payload);
         var record = new ProducerRecord<>(topic, key, value);
 
         Callback callback = (data, ex) -> {

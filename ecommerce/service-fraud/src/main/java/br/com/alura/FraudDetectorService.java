@@ -18,14 +18,14 @@ public class FraudDetectorService {
 
     private final KafkaDispatcher<Order> ordeDispatcher = new KafkaDispatcher<>();
 
-    void parse(ConsumerRecord<String, Order> record) throws InterruptedException, ExecutionException {
+    void parse(ConsumerRecord<String, Message<Order>> record) throws InterruptedException, ExecutionException {
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, checking for fraud");
         System.out.println(record.key());
         System.out.println(record.partition());
         System.out.println(record.offset());
         
-        var order = record.value();
+        var order = record.value().getPayload();
         if (isFraud(order)) {
             System.out.println("Order is a fraud!!!!!!!\n" + order);
             ordeDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(), order);
