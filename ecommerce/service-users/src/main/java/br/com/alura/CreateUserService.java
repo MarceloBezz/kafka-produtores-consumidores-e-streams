@@ -25,16 +25,15 @@ public class CreateUserService {
         var createUserService = new CreateUserService();
         var service = new KafkaService<Order>(CreateUserService.class.getSimpleName(), "ECOMMERCE_NEW_ORDER",
                 createUserService::parse,
-                Order.class,
                 Map.of());
         service.run();
     }
 
-    void parse(ConsumerRecord<String, Order> record) throws InterruptedException, ExecutionException, SQLException {
+    void parse(ConsumerRecord<String, Message<Order>> record) throws InterruptedException, ExecutionException, SQLException {
         System.out.println("------------------------------------------");
         System.out.println("Processing new order, checking for new user");
         System.out.println(record.value());
-        var order = record.value();
+        var order = record.value().getPayload();
         if (isNewUser(order.getEmail())) {
             insertNewUser(order.getEmail());
         }

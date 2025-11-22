@@ -9,7 +9,6 @@ public class EmailService {
         var emailService = new EmailService();
         var service = new KafkaService<Email>(EmailService.class.getSimpleName(), "ECOMMERCE_SEND_EMAIL",
                 emailService::parse,
-                Email.class,
                 Map.of());
         service.run();
     }

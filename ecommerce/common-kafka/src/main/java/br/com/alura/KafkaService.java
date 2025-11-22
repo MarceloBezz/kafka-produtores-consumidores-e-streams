@@ -15,18 +15,18 @@ class KafkaService<T> {
     private final KafkaConsumer<String, Message<T>> consumer;
     private final ConsumerFunction<T> parse;
 
-    KafkaService(String groupId, ConsumerFunction<T> parse, Class<T> type, Map<String, String> properties) {
+    KafkaService(String groupId, ConsumerFunction<T> parse, Map<String, String> properties) {
         this.parse = parse;
-        this.consumer = new KafkaConsumer<>(getProperties(type, groupId, properties));
+        this.consumer = new KafkaConsumer<>(getProperties(groupId, properties));
     }
 
-    KafkaService(String groupId, String topic, ConsumerFunction<T> parse, Class<T> type, Map<String, String> properties) {
-        this(groupId, parse, type, properties);
+    KafkaService(String groupId, String topic, ConsumerFunction<T> parse, Map<String, String> properties) {
+        this(groupId, parse, properties);
         this.consumer.subscribe(Collections.singletonList(topic));
     }
 
-    KafkaService(String groupId, Pattern topic, ConsumerFunction<T> parse, Class<T> type, Map<String, String> properties) {
-        this(groupId, parse, type, properties);
+    KafkaService(String groupId, Pattern topic, ConsumerFunction<T> parse,Map<String, String> properties) {
+        this(groupId, parse, properties);
         this.consumer.subscribe(topic);
     }
 
@@ -49,7 +49,7 @@ class KafkaService<T> {
         }
     }
 
-    private Properties getProperties(Class<T> type, String groupId, Map<String, String> overrideProperties) {
+    private Properties getProperties(String groupId, Map<String, String> overrideProperties) {
         var properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
