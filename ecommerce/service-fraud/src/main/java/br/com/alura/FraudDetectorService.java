@@ -25,13 +25,14 @@ public class FraudDetectorService {
         System.out.println(record.partition());
         System.out.println(record.offset());
         
-        var order = record.value().getPayload();
+        var message = record.value();
+        var order = message.getPayload();
         if (isFraud(order)) {
             System.out.println("Order is a fraud!!!!!!!\n" + order);
-            ordeDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(), order);
+            ordeDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.getEmail(), order, message.getId().continueWith(FraudDetectorService.class.getSimpleName()));
         } else {
             System.out.println("Approved: " + order);
-            ordeDispatcher.send("ECOMMERCE_ORDER_APPROVED", order.getEmail(), order);
+            ordeDispatcher.send("ECOMMERCE_ORDER_APPROVED", order.getEmail(), order, message.getId().continueWith(FraudDetectorService.class.getSimpleName()));
         }
 
         System.out.println("Order processed!");

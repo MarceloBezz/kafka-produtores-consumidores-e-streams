@@ -15,7 +15,7 @@ public class ReadingReport {
     public static void main(String[] args) {
         var readingReportService = new ReadingReport();
         var service = new KafkaService<User>(ReadingReport.class.getSimpleName(),
-                "USER_GENERATE_READING_REPORT",
+                "ECOMMERCE_USER_GENERATE_READING_REPORT",
                 readingReportService::parse,
                 User.class,
                 Map.of());
